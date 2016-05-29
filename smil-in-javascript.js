@@ -88,7 +88,7 @@ var elementEvents = {
 };
 
 // Control debug logging.
-var verbose = false;
+var verbose = true;
 
 // indexed by animationRecordId and by element id
 var animationRecords = {};
@@ -128,10 +128,19 @@ PriorityQueue.prototype = {
     this.heap.push(null);
     this.shiftUp(index, newEntry);
   },
+  
+  // ZKH: it seems to be removing transforms and reordering them here
   remove: function(existingEntry) {
-    var index = existingEntry.heapIndex;
+    var index = existingEntry.heapIndex,
+    	lastEntry;
     existingEntry.heapIndex = null;
-    var lastEntry = this.heap.pop();
+    
+    if (this.heap.length > 3) {
+    	lastEntry = this.heap.splice(2, 1)[0];
+    } else {
+    	lastEntry = this.heap.pop();
+    }
+    //var lastEntry = this.heap.pop();
     if (lastEntry === existingEntry)
       return;
     if (index === 1) {
@@ -731,6 +740,7 @@ AnimationRecord.prototype = {
     var keyframes = null;
     if ((this.nodeName === 'animate' ||
          this.nodeName === 'animateTransform')) {
+         
       // FIXME: Support more ways of specifying keyframes, e.g. by, or only to.
       // FIXME: Support ways of specifying timing function.
 
@@ -740,6 +750,7 @@ AnimationRecord.prototype = {
       } else {
         // this.nodeName === 'animateTransform'
         var transformType;
+        
         if (this.type === 'scale' ||
             this.type === 'rotate' ||
             this.type === 'skewX' ||
@@ -748,7 +759,6 @@ AnimationRecord.prototype = {
         } else {
           transformType = 'translate'; // default if type is not specified
         }
-
         processValue = function(value) {
           // Web Animations requires rotate, scale and transform values to be
           // comma separated.

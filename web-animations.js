@@ -705,6 +705,7 @@ AnimationPlayer.prototype = {
   },
   _registerOnTimeline: function() {
     if (!this._registeredOnTimeline) {
+    	console.log(this.source.effect._keyframeDictionaries[0].transform);
       PLAYERS.push(this);
       this._registeredOnTimeline = true;
     }
@@ -1780,6 +1781,7 @@ MotionPathEffect.prototype = createObject(AnimationEffect.prototype, {
       angle += rotation / 2 / Math.PI * 360;
     }
     value.push({t: 'rotate', d: [angle]});
+    
     compositor.setAnimatedValue(target, 'transform',
         new AddReplaceCompositableValue(value, this.composite));
   },
@@ -2076,7 +2078,8 @@ KeyframeEffect.prototype = createObject(AnimationEffect.prototype, {
     enterModifyCurrentAnimationState();
     try {
       // Use the default value if an invalid string is specified.
-      this._composite = value === 'add' ? 'add' : 'replace';
+      // ZKH: changed value to value.composite 
+      this._composite = (value.composite === 'add' ? 'add' : 'replace');
     } finally {
       exitModifyCurrentAnimationState(repeatLastTick);
     }
@@ -2213,7 +2216,7 @@ KeyframeEffect.prototype = createObject(AnimationEffect.prototype, {
     return '<KeyframeEffect>';
   },
   _compositeForKeyframe: function(keyframe) {
-    return isDefinedAndNotNull(keyframe.composite) ?
+  	return isDefinedAndNotNull(keyframe.composite) ?
         keyframe.composite : this.composite;
   },
   _allKeyframesUseSameCompositeOperation: function(keyframes) {
@@ -5123,8 +5126,8 @@ CompositedPropertyMap.prototype = {
     }
   },
   applyAnimatedValues: function() {
-    for (var property in this.properties) {
-      var valuesToComposite = this.properties[property];
+    for (var property in this.properties) {;
+    	var valuesToComposite = this.properties[property];
       if (valuesToComposite.length === 0) {
         continue;
       }
@@ -5144,6 +5147,8 @@ CompositedPropertyMap.prototype = {
           isSvgMode));
       this.properties[property] = [];
     }
+    
+  
   }
 };
 
