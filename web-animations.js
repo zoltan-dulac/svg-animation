@@ -705,8 +705,7 @@ AnimationPlayer.prototype = {
   },
   _registerOnTimeline: function() {
     if (!this._registeredOnTimeline) {
-    	console.log(this.source.effect._keyframeDictionaries[0].transform);
-      PLAYERS.push(this);
+    	PLAYERS.push(this);
       this._registeredOnTimeline = true;
     }
   },

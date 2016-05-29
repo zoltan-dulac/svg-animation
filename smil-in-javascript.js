@@ -88,7 +88,7 @@ var elementEvents = {
 };
 
 // Control debug logging.
-var verbose = true;
+var verbose = !!document.getElementsByTagName('html')[0].getAttribute('data-smil-js-debug') || false;
 
 // indexed by animationRecordId and by element id
 var animationRecords = {};
